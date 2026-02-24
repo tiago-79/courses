@@ -4,6 +4,7 @@ import br.gov.caixa.model.Course;
 import br.gov.caixa.services.CourseService;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
 
 @Path("/courses")
 public class CourseResource {
@@ -15,7 +16,8 @@ public class CourseResource {
     }
 
     @POST
-    public void createCourse( CourseDTO courseDTO ){
-        Course course = this.service.createCourse(new Course(courseDTO.name()));
+    public Response createCourse(CourseDTO courseDTO ){
+        this.service.createCourse(new Course(courseDTO.name()));
+        return Response.status(201).build();
     }
 }
