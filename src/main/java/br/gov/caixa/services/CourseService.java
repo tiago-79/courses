@@ -7,5 +7,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class CourseService {
 
     public Course createCourse(Course course) {
+        return course;
     }
 }
