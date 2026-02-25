@@ -18,15 +18,19 @@ public class Course extends PanacheEntityBase {
     @Column(unique = true, nullable = false)
     private String name;
 
-
-    //private List<Lesson> lessons;
+    @OneToMany
+    private List<Lesson> lessons;
 
     protected Course() {
     }
 
     public Course(String name ) {
         this.name = name;
-        //this.lessons = new ArrayList<>();
+        this.lessons = new ArrayList<>();
+    }
+
+    public void addLesson(Lesson lesson) {
+        this.lessons.add(lesson);
     }
 
     public Long getId() {
@@ -45,11 +49,11 @@ public class Course extends PanacheEntityBase {
         this.name = name;
     }
 
-//    public List<Lesson> getLessons() {
-//        return lessons;
-//    }
-//
-//    public void setLessons(List<Lesson> lessons) {
-//        this.lessons = lessons;
-//    }
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 }

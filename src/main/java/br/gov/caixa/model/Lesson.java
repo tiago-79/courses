@@ -1,13 +1,23 @@
 package br.gov.caixa.model;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
-public class Lesson {
+@Entity
+public class Lesson extends PanacheEntity {
 
-    private Long id;
+    @Column(unique = true, nullable = false)
     private String name;
 
-    public Lesson(Long id, String name) {
-        this.id = id;
+    public Lesson( String name) {
         this.name = name;
+    }
+
+    public Lesson() {
+    }
+
+    public String getName() {
+        return name;
     }
 }
