@@ -7,13 +7,13 @@ import br.gov.caixa.model.Lesson;
 import br.gov.caixa.services.CourseService;
 import io.quarkus.logging.Log;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/courses")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class CourseResource {
 
     private final CourseService courseService;
@@ -48,6 +48,16 @@ public class CourseResource {
 
         this.courseService.createCourse(new Course(courseDTO.name()));
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    public Response updateCourse(@PathParam(value = "id") Long id, CourseDTO courseDTO){
+        Log.info("Passing through " + this.getClass().getName());
+
+        this.courseService.updateCourse(id, courseDTO.name());
+
+        return Response.status(Response.Status.OK).build();
     }
 
     // ---------- LESSON ----------
