@@ -60,6 +60,13 @@ public class CourseResource {
         return Response.status(Response.Status.OK).build();
     }
 
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") Long id){
+        Log.info("Passing through " + this.getClass().getName());
+        this.courseService.deleteCourse(id);
+        return Response.noContent().build();
+    }
     // ---------- LESSON ----------
     @POST
     @Path("/{id}/lessons")

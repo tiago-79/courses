@@ -30,12 +30,15 @@ public class CourseService {
 
     @Transactional
     public Course updateCourse(Long id, String name) {
-        Course course = Course.findById(id);
+        Course course = getCourse(id);
 
-        if (course == null) {
-            throw new NotFoundException();
-        }
         course.setName(name);
         return course;
+    }
+
+    @Transactional
+    public void deleteCourse(Long id) {
+        Course course = getCourse(id);
+        course.delete();
     }
 }
