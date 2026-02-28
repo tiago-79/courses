@@ -7,6 +7,7 @@ import br.gov.caixa.model.Lesson;
 import br.gov.caixa.services.CourseService;
 import io.quarkus.logging.Log;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -43,7 +44,7 @@ public class CourseResource {
     }
 
     @POST
-    public Response createCourse( CourseDTO courseDTO ){
+    public Response createCourse(@Valid CourseDTO courseDTO ){
         Log.info("Passing through " + this.getClass().getName());
 
         this.courseService.createCourse(new Course(courseDTO.name()));
@@ -52,7 +53,7 @@ public class CourseResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateCourse(@PathParam(value = "id") Long id, CourseDTO courseDTO){
+    public Response updateCourse(@PathParam(value = "id") Long id, @Valid CourseDTO courseDTO){
         Log.info("Passing through " + this.getClass().getName());
 
         this.courseService.updateCourse(id, courseDTO.name());
@@ -71,7 +72,7 @@ public class CourseResource {
     @POST
     @Path("/{id}/lessons")
     @Transactional
-    public Response createLesson(@PathParam("id") Long id, LessonDTO lessonDTO) {
+    public Response createLesson(@PathParam("id") Long id, @Valid LessonDTO lessonDTO) {
         Log.info("Passing through " + this.getClass().getName());
         Course course = Course.findById(id);
 
@@ -84,5 +85,14 @@ public class CourseResource {
         course.addLesson(lesson);
 
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    @GET
+    @Path("/{id}/lessons")
+    public Response listAllLessonsByCourseId(@PathParam("id") Long id, @Valid CourseDTO courseDTO){
+        Course courseById = Course.findById(id);
+        return Response.ok(
+                courseById.getLessons() // DTO
+        ).build();
     }
 }
