@@ -1,4 +1,10 @@
 package br.gov.caixa.dto;
 
-public record LessonDTO(String name) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record LessonDTO(
+        @NotNull
+        @NotBlank
+        String name ) {
 }

@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
+
 @ApplicationScoped
 public class CourseService {
 
@@ -22,6 +24,12 @@ public class CourseService {
         Log.info("Passing through " + this.getClass().getName() + " with course: " + course.toString());
         course.persist();
         return course;
+    }
+
+    public List<Course> findAllPaginado(int pageIndex, int pageSize) {
+        return Course.findAll()                   // Cria a query
+                .page(pageIndex, pageSize)   // Define a página e o tamanho
+                .list();                     // Executa a busca
     }
 
     public Course getCourse(Long id){

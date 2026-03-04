@@ -23,10 +23,7 @@ public class Course extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    @NotNull
-    @NotBlank
-    @Size(min = 3, message = "O nome do curso deve ter no mínimo 3 caracteres.")
+    @Column(nullable = false)
     private String name;
 
     @OneToMany

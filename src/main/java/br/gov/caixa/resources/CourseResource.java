@@ -6,11 +6,18 @@ import br.gov.caixa.model.Course;
 import br.gov.caixa.model.Lesson;
 import br.gov.caixa.services.CourseService;
 import io.quarkus.logging.Log;
+import io.quarkus.panache.common.Page;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
+import java.net.URI;
+import java.util.List;
 
 @Path("/courses")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -23,14 +30,34 @@ public class CourseResource {
         this.courseService = service;
     }
 
-    // ---------- COURSE ----------
-    @GET
-    public Response listAll(){
+    @Context
+    UriInfo uriInfo; // Injeção de contexto para construir URIs dinâmicas
+
+    @POST
+    public Response createCourse( @Valid CourseDTO courseDTO ){
         Log.info("Passing through " + this.getClass().getName());
 
-        return Response.ok(
-                Course.listAll()
-        ).build();
+        Course newCourse = new Course(courseDTO.name());
+        this.courseService.createCourse(newCourse);
+        URI uri = uriInfo.getAbsolutePathBuilder()
+                .path(newCourse.getId().toString())
+                .build();
+
+        return Response.created(uri).entity(newCourse).build();
+    }
+
+    @GET
+    public Response listAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size) {
+
+        //List<Course> courses = courseService.findAllPaginado(page, size);
+        List<Course> courses = Course.findAll().page(Page.of(page, size)).list();
+
+        return Response.ok(courses).build();
+//        return Response.ok(
+//                Course.listAll()
+//        ).build();
     }
 
     @GET
@@ -38,17 +65,10 @@ public class CourseResource {
     public Response courseById(@PathParam("id") Long id){
         Log.info("Passing through " + this.getClass().getName());
         Course courseById = Course.findById(id);
-        return Response.ok(
-                courseById // DTO
-        ).build();
-    }
 
-    @POST
-    public Response createCourse(@Valid CourseDTO courseDTO ){
-        Log.info("Passing through " + this.getClass().getName());
-
-        this.courseService.createCourse(new Course(courseDTO.name()));
-        return Response.status(Response.Status.CREATED).build();
+        return Response.ok( courseById )
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .build();
     }
 
     @PUT
@@ -58,7 +78,9 @@ public class CourseResource {
 
         this.courseService.updateCourse(id, courseDTO.name());
 
-        return Response.status(Response.Status.OK).build();
+        return Response.ok()
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .build();
     }
 
     @DELETE
@@ -68,6 +90,7 @@ public class CourseResource {
         this.courseService.deleteCourse(id);
         return Response.noContent().build();
     }
+
     // ---------- LESSON ----------
     @POST
     @Path("/{id}/lessons")
