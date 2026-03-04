@@ -51,13 +51,9 @@ public class CourseResource {
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size) {
 
-        //List<Course> courses = courseService.findAllPaginado(page, size);
         List<Course> courses = Course.findAll().page(Page.of(page, size)).list();
 
         return Response.ok(courses).build();
-//        return Response.ok(
-//                Course.listAll()
-//        ).build();
     }
 
     @GET
@@ -66,17 +62,21 @@ public class CourseResource {
         Log.info("Passing through " + this.getClass().getName());
         Course courseById = Course.findById(id);
 
-        return Response.ok( courseById )
-                .header("Content-Type", MediaType.APPLICATION_JSON)
-                .build();
+        if (courseById == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok( courseById ).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response updateCourse(@PathParam(value = "id") Long id, @Valid CourseDTO courseDTO){
+    public Response updateCourse(@PathParam("id") Long id, @Valid CourseDTO courseDTO){
         Log.info("Passing through " + this.getClass().getName());
 
-        this.courseService.updateCourse(id, courseDTO.name());
+        Course updatedCourse = this.courseService.updateCourse(id, courseDTO.name());
+        if (updatedCourse == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
 
         return Response.ok()
                 .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ public class CourseResource {
         lesson.persist();
         course.addLesson(lesson);
 
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED).header("Content-Type", MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -116,6 +116,8 @@ public class CourseResource {
         Course courseById = Course.findById(id);
         return Response.ok(
                 courseById.getLessons() // DTO
-        ).build();
+        )
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .build();
     }
 }
