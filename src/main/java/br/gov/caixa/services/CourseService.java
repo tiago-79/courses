@@ -1,13 +1,11 @@
 package br.gov.caixa.services;
 
-import br.gov.caixa.dto.CourseDTO;
 import br.gov.caixa.model.Course;
 import io.quarkus.logging.Log;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 

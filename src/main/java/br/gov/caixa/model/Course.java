@@ -1,44 +1,35 @@
 package br.gov.caixa.model;
 
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "course")
-@Consumes({"application/json"})
-@Produces(MediaType.APPLICATION_JSON)
-public class Course extends PanacheEntityBase {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "courses")
+public class Course extends PanacheEntity {
 
     @Column(nullable = false)
     private String name;
 
     @OneToMany
-    private List<Lesson> lessons;
+    private final List<Lesson> lessons = new ArrayList<>();
 
     protected Course() {
     }
 
     public Course( String name ) {
         this.name = name;
-        this.lessons = new ArrayList<>();
     }
 
     public void addLesson( Lesson lesson ) {
-        this.lessons.add(lesson);
+
+        Lesson validatedLesson = Objects.requireNonNull(lesson, "lesson must no be null");
+        this.lessons.add(validatedLesson);
     }
 
     public Long getId() {
@@ -58,10 +49,10 @@ public class Course extends PanacheEntityBase {
     }
 
     public List<Lesson> getLessons() {
-        return lessons;
+        return Collections.unmodifiableList(this.lessons);
     }
 
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
+    public void changeName(String newName) {
+        this.name = Objects.requireNonNull(newName, "name must not be null");
     }
 }

@@ -1,13 +1,14 @@
 package br.gov.caixa.resources;
 
-import br.gov.caixa.dto.CourseDTO;
-import br.gov.caixa.dto.LessonDTO;
+import br.gov.caixa.dto.CourseRequest;
+import br.gov.caixa.dto.CourseResponse;
+import br.gov.caixa.dto.CreateLessonRequest;
+import br.gov.caixa.dto.LessonResponse;
 import br.gov.caixa.model.Course;
 import br.gov.caixa.model.Lesson;
 import br.gov.caixa.services.CourseService;
 import io.quarkus.logging.Log;
 import io.quarkus.panache.common.Page;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -18,6 +19,7 @@ import jakarta.ws.rs.core.UriInfo;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Path("/courses")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -34,26 +36,33 @@ public class CourseResource {
     UriInfo uriInfo; // Injeção de contexto para construir URIs dinâmicas
 
     @POST
-    public Response createCourse( @Valid CourseDTO courseDTO ){
+    @Transactional
+    public Response createCourse( @Valid CourseRequest courseRequest){
         Log.info("Passing through " + this.getClass().getName());
 
-        Course newCourse = new Course(courseDTO.name());
+        Course newCourse = new Course(courseRequest.name());
         this.courseService.createCourse(newCourse);
         URI uri = uriInfo.getAbsolutePathBuilder()
                 .path(newCourse.getId().toString())
                 .build();
 
-        return Response.created(uri).entity(newCourse).build();
+        CourseResponse payload = new CourseResponse(newCourse.id, newCourse.getName(), List.of());
+
+        return Response.created(uri).entity(payload).build();
     }
 
     @GET
-    public Response listAll(
+    public Response getCourses(
             @QueryParam("page") @DefaultValue("0") int page,
             @QueryParam("size") @DefaultValue("10") int size) {
 
-        List<Course> courses = Course.findAll().page(Page.of(page, size)).list();
+        List<Course> courses = Course.listAll();
+        List<CourseResponse> response = courses
+                .stream()
+                .map((Course c) -> new CourseResponse(c.id, c.getName(), List.of()))
+                .toList();
 
-        return Response.ok(courses).build();
+        return Response.ok(response).build();
     }
 
     @GET
@@ -65,59 +74,92 @@ public class CourseResource {
         if (courseById == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok( courseById ).build();
+        return Response.ok(new CourseResponse(courseById.id, courseById.getName(), List.of())).build();
     }
 
     @PUT
     @Path("/{id}")
-    public Response updateCourse(@PathParam("id") Long id, @Valid CourseDTO courseDTO){
+    @Transactional
+    public Response updateCourse(@PathParam("id") Long id, @Valid CourseRequest courseRequest){
         Log.info("Passing through " + this.getClass().getName());
 
-        Course updatedCourse = this.courseService.updateCourse(id, courseDTO.name());
-        if (updatedCourse == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        Optional <Course> possibleCourse = Course.findByIdOptional(id);
+
+        if (possibleCourse.isEmpty()) {
+            Log.info("Course with ID " + id + " not found");
+            return Response.status(Response.Status.NOT_FOUND).build(); // early-return
         }
 
-        return Response.ok()
-                .header("Content-Type", MediaType.APPLICATION_JSON)
-                .build();
+        Course course = possibleCourse.get();
+        course.setName(courseRequest.name());
+        URI uri = uriInfo.getAbsolutePath();
+
+        return Response.ok(new CourseResponse(course.id, course.getName(), List.of())).build();
+//        Course updatedCourse = this.courseService.updateCourse(id, courseDTO.name());
+//        if (updatedCourse == null) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        }
+//
+//        return Response.ok(uri).entity(course)
+//                .header("Content-Type", MediaType.APPLICATION_JSON)
+//                .build();
+//        Course newCourse = new Course(courseDTO.name());
+//        this.courseService.createCourse(newCourse);
+//
+//
+//        return Response.created(uri).entity(newCourse).build();
     }
 
     @DELETE
     @Path("/{id}")
+    @Transactional
     public Response delete(@PathParam("id") Long id){
-        Log.info("Passing through " + this.getClass().getName());
-        this.courseService.deleteCourse(id);
+        Log.info("Passing through CourseResponse/DELETE with id: " + id);
+        //this.courseService.deleteCourse(id);
+        Course.deleteById(id);
         return Response.noContent().build();
     }
 
     // ---------- LESSON ----------
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id}/lessons")
     @Transactional
-    public Response createLesson(@PathParam("id") Long id, @Valid LessonDTO lessonDTO) {
+    public Response createLesson(@PathParam("id") Long id, @Valid CreateLessonRequest createLessonRequest) {
         Log.info("Passing through " + this.getClass().getName());
-        Course course = Course.findById(id);
 
+        Course course = Course.findById(id);
         if (course == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        Lesson lesson = new Lesson(lessonDTO.name());
+        Lesson lesson = new Lesson(createLessonRequest.name());
         lesson.persist();
         course.addLesson(lesson);
 
-        return Response.status(Response.Status.CREATED).header("Content-Type", MediaType.APPLICATION_JSON).build();
+        URI uri = URI.create("/courses/" + course.id + "/lessons/" + lesson.id);
+
+        LessonResponse lessonResponse = new LessonResponse(lesson.id, lesson.getName());
+
+        return Response.created(uri)
+                .header("Content-Type", MediaType.APPLICATION_JSON)
+                .entity(lessonResponse)
+                .build();
     }
 
     @GET
     @Path("/{id}/lessons")
-    public Response listAllLessonsByCourseId(@PathParam("id") Long id, @Valid CourseDTO courseDTO){
+    public Response getLessonsByCourseId(@PathParam("id") Long id){
         Course courseById = Course.findById(id);
-        return Response.ok(
-                courseById.getLessons() // DTO
-        )
-                .header("Content-Type", MediaType.APPLICATION_JSON)
-                .build();
+
+        if (courseById == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        List<LessonResponse> response = courseById.getLessons()
+                .stream()
+                .map((Lesson l) -> new LessonResponse(l.id, l.getName()))
+                .toList();
+
+        return Response.ok(response).build();
     }
 }
