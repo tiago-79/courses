@@ -1,42 +1,44 @@
 package br.gov.caixa.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
+import io.quarkus.security.jpa.Password;
+import io.quarkus.security.jpa.UserDefinition;
+import io.quarkus.security.jpa.Username;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user_auth")
+@UserDefinition
 public class User extends PanacheEntity {
 
-    @Column(nullable = false)
-    private String name;
+    @Username
+    private String userName;
 
-    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Password
     private String password;
 
-    private String role;
+//    private String role;
 
     protected User() {
     }
 
-    public User(String name, String email, String password) {
+    public User(String userName, String email, String password) {
 
-        this.name = name;
+        this.userName = userName;
         this.email = email;
         this.password = password;
 
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -55,11 +57,11 @@ public class User extends PanacheEntity {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
 }
