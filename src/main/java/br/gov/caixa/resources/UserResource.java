@@ -40,7 +40,7 @@ public class UserResource {
                 .path(newUser.id.toString())
                 .build();
 
-        UserResponse payload = new UserResponse(newUser.id,newUser.getName(), newUser.getEmail());
+        UserResponse payload = new UserResponse(newUser.id,newUser.getUserName(), newUser.getEmail());
         return Response.created(uri).entity(payload).build();
     }
 }
