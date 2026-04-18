@@ -20,4 +20,12 @@ public class AuthResource {
 
         return Response.ok(token).build();
     }
+    @POST
+    @Path("/jwe")
+    public Response generateJwe(){
+
+        String token = jwtGenerator.generateJwe();
+
+        return Response.ok(token).build();
+    }
 }
