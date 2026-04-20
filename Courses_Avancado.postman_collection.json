@@ -1,0 +1,493 @@
+{
+  "info": {
+    "_postman_id": "e13bd06e-4a5a-4429-9598-f67191fe0d90",
+    "name": "Courses Avancado",
+    "description": "Postman Collection to test Courses API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52149765",
+    "_collection_link": "https://go.postman.co/collection/52149765-e13bd06e-4a5a-4429-9598-f67191fe0d90?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "courses",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"name\": \"gfhggrhdhdtfipuhgfd\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/courses",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    },
+    {
+      "name": "courses",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJKb2huIERvZSIsImlzcyI6Imh0dHBzOi8vcXVhcmt1cy5pby9pc3N1ZXIiLCJncm91cHMiOlsiQURNSU4iLCJVU0VSIl0sImlhdCI6MTc3NjYyNjEwNywiZXhwIjoxNzc2NjI5NzA3LCJqdGkiOiIwZDBjMjdkYS01ZjExLTRlMDMtYmIyZi1lZDRlNTNhMmI1ZDAifQ.EgExgSrovPWbhkBOY8vL0EFm-CzadqfP8ELnl-eDQjAHubNFprhxABUVCLCBpn-GQaI5W076yX82Mbgi74fHVpJN9KXlQLKMJR05UGZ40CJYldKi_x509vV_kflLQZ-JWQXBkA8wLsVSun7OhCFalgHmO1lpT2IppPwikrQG5oL18QqsxTC09-NhiPZuwPWBIcaLEbMmbHeDV64O16n8umcQQaH9esDcjV9SoYifvC7GJWgVICpOz6ochOrw_NQyxaeY1uv1k3LUSTOB3Q28vTxUdlf_U7vwOkv7Qgct_cQASaQmymxG7qP9XXHGUDA-0Tk6YZEZRt_PkCh7RJPWIg",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJKb2huIERvZSIsImlzcyI6Imh0dHBzOi8vcXVhcmt1cy5pby9pc3N1ZXIiLCJncm91cHMiOlsiVVNFUiJdLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNzc2NTYyMzM2LCJleHAiOjE3NzY1NjU5MzYsImp0aSI6ImZhMWIxNmRjLTcxOWEtNDFiZS1hNjhiLTM2N2JmMmVmNDRlZiJ9.HuZdOSjqeBhIK3o302382NY73g3fUdO8tI91pk66tDPF-vXEx3u7c9vcS_-U4F5fzgSFSEdT9bHhP-Go9LxL7Y5AWYmz_LhXsRDEdT8Vc4lknDiNS23V5QwmGc9Krj6Jej7UKck9nX8gXchDsCgNNeT-XCtVqSDCoUibVkMH-Tbvg77r6VEXRTIXG2HvwB1zxRfD_wOau6ZJpC-F0SBxWRI557NSPsXkbU3yOHYttnrEY2KGqME6Dru3x3q-ow-aswpHlV3T2QL1zmuUiMgcSJ8vp0_CZSUTo2KSLgB-UkazcJ0Z1JUT2yJhbm_oAnipQjBwTgWCHXvo_NAG4EptXw",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:8080/courses",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "courseById",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/courses/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses",
+            ":id"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "1",
+              "disabled": true
+            }
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "102"
+            }
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "{id}/lessons",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"non0umn\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/courses/:id/lessons",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses",
+            ":id",
+            "lessons"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "teste",
+              "type": "text",
+              "disabled": true
+            }
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "102"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "{id}/lessons",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"no2noun\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/courses/:id/lessons",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses",
+            ":id",
+            "lessons"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "teste",
+              "type": "text",
+              "disabled": true
+            }
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "102"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "{id}",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"kkkkkkkk\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/courses/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "102"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "{id}",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/courses/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "courses",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "102"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "users",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"John Doe\"    \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "JWE",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/auth/jwe",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "jwe"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "token",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/auth/token",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "JWS",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"John Doe\"    \r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/auth/jws",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "jws"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "signUp",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"John Doe\",\r\n    \"password\": \"password123\"   \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/auth/sign-up",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "sign-up"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "signIn",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"John Doe\",\r\n    \"password\": \"password123\"   \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/auth/sign-in",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "auth",
+            "sign-in"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "me",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/users/me",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
