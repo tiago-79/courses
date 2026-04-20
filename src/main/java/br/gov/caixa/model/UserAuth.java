@@ -6,6 +6,7 @@ import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -13,12 +14,13 @@ import jakarta.validation.constraints.Email;
 @Entity
 @Table(name = "user_auth")
 @UserDefinition
-public class User extends PanacheEntity {
+public class UserAuth extends PanacheEntity {
 
     @Username
     private String username;
 
     @Email
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Password
@@ -27,22 +29,23 @@ public class User extends PanacheEntity {
     @Roles
     private String role;
 
-    protected User() {
+    protected UserAuth() {
     }
 
-    public User(String username, String email, String password) {
+    public UserAuth(String username, String email, String password) {
 
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public static void add (String username, String password, String role){
-        User user = new User();
-        user.username = username;
-        user.password = BcryptUtil.bcryptHash(password);
-        user.role = role;
-        user.persist();
+    public static void add (String username,String email, String password, String role){
+        UserAuth userAuth = new UserAuth();
+        userAuth.username = username;
+        userAuth.email = email;
+        userAuth.password = BcryptUtil.bcryptHash(password);
+        userAuth.role = role;
+        userAuth.persist();
     }
 
     public String getUsername() {

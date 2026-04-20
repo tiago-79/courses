@@ -9,6 +9,8 @@ import br.gov.caixa.model.Lesson;
 import br.gov.caixa.services.CourseService;
 import io.quarkus.logging.Log;
 import io.quarkus.panache.common.Page;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -16,9 +18,12 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Path("/courses")
@@ -32,11 +37,15 @@ public class CourseResource {
         this.courseService = service;
     }
 
+    @Inject
+    JsonWebToken jwt;
+
     @Context
     UriInfo uriInfo; // Injeção de contexto para construir URIs dinâmicas
 
     @POST
     @Transactional
+    @RolesAllowed("ADMIN")
     public Response createCourse( @Valid CourseRequest courseRequest){
         Log.info("Passing through " + this.getClass().getName());
 
@@ -80,6 +89,7 @@ public class CourseResource {
     @PUT
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADMIN")
     public Response updateCourse(@PathParam("id") Long id, @Valid CourseRequest courseRequest){
         Log.info("Passing through " + this.getClass().getName());
 
@@ -95,26 +105,20 @@ public class CourseResource {
         URI uri = uriInfo.getAbsolutePath();
 
         return Response.ok(new CourseResponse(course.id, course.getName(), List.of())).build();
-//        Course updatedCourse = this.courseService.updateCourse(id, courseDTO.name());
-//        if (updatedCourse == null) {
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
-//
-//        return Response.ok(uri).entity(course)
-//                .header("Content-Type", MediaType.APPLICATION_JSON)
-//                .build();
-//        Course newCourse = new Course(courseDTO.name());
-//        this.courseService.createCourse(newCourse);
-//
-//
-//        return Response.created(uri).entity(newCourse).build();
     }
 
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADMIN")
     public Response delete(@PathParam("id") Long id){
-        Log.info("Passing through CourseResponse/DELETE with id: " + id);
+
+        Optional<Object> claim = jwt.claim(Claims.sub);
+        if (claim.isPresent()){
+            System.out.println("sub " + claim.get());
+        } else{
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
         //this.courseService.deleteCourse(id);
         Course.deleteById(id);
         return Response.noContent().build();
@@ -125,6 +129,7 @@ public class CourseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id}/lessons")
     @Transactional
+    @RolesAllowed("ADMIN")
     public Response createLesson(@PathParam("id") Long id, @Valid CreateLessonRequest createLessonRequest) {
         Log.info("Passing through " + this.getClass().getName());
 
@@ -147,6 +152,7 @@ public class CourseResource {
                 .build();
     }
 
+    @RolesAllowed("USER")
     @GET
     @Path("/{id}/lessons")
     public Response getLessonsByCourseId(@PathParam("id") Long id){
