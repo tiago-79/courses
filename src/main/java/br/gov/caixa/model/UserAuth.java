@@ -1,11 +1,14 @@
 package br.gov.caixa.model;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.security.jpa.Password;
+import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "user_auth")
@@ -13,32 +16,41 @@ import jakarta.persistence.Table;
 public class User extends PanacheEntity {
 
     @Username
-    private String userName;
+    private String username;
 
+    @Email
     private String email;
 
     @Password
     private String password;
 
-//    private String role;
+    @Roles
+    private String role;
 
     protected User() {
     }
 
-    public User(String userName, String email, String password) {
+    public User(String username, String email, String password) {
 
-        this.userName = userName;
+        this.username = username;
         this.email = email;
         this.password = password;
-
     }
 
-    public String getUserName() {
-        return userName;
+    public static void add (String username, String password, String role){
+        User user = new User();
+        user.username = username;
+        user.password = BcryptUtil.bcryptHash(password);
+        user.role = role;
+        user.persist();
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -57,11 +69,11 @@ public class User extends PanacheEntity {
         this.password = password;
     }
 
-//    public String getRole() {
-//        return role;
-//    }
-//
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }
